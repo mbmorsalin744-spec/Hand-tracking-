@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -14,7 +14,6 @@
 }
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow:hidden;touch-action:none}
 
-/* SPLASH */
 #splash{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;z-index:200;transition:opacity 0.5s,visibility 0.5s}
 #splash.hidden{opacity:0;visibility:hidden;pointer-events:none}
 .splash-icon{width:80px;height:80px;background:linear-gradient(135deg,#1d4ed8,#7c3aed);border-radius:24px;display:flex;align-items:center;justify-content:center;font-size:40px;box-shadow:0 0 40px rgba(59,130,246,0.3)}
@@ -26,13 +25,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .progress{width:220px;height:3px;background:rgba(255,255,255,0.1);border-radius:100px;overflow:hidden;display:none}
 .progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:100px;transition:width 0.4s;width:0%}
 
-/* CAM */
 .cam-wrap{position:fixed;inset:0}
-#videoEl{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;opacity:1;z-index:1}
+#videoEl{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;opacity:0.4;z-index:1}
 #canvasEl{position:absolute;top:0;left:0;width:100%;height:100%;z-index:2}
 #drawCanvas{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:3}
 
-/* HEADER */
 header{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:rgba(15,17,23,0.7);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
 .logo{display:flex;align-items:center;gap:8px;font-weight:600;font-size:15px}
 .logo-dot{width:28px;height:28px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px}
@@ -40,15 +37,12 @@ header{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:
 .sdot{width:6px;height:6px;border-radius:50%;background:var(--text2);transition:all 0.3s}
 .sdot.on{background:var(--green);box-shadow:0 0 0 3px rgba(16,185,129,0.25)}
 
-/* TOP RIGHT */
 .top-right{position:fixed;top:64px;right:12px;z-index:100;display:none;flex-direction:column;gap:6px}
 .mini{background:rgba(15,17,23,0.75);backdrop-filter:blur(12px);border:1px solid var(--border);border-radius:10px;padding:6px 10px;font-size:11px;font-family:'DM Mono',monospace;color:var(--text2)}
 .mini b{color:var(--accent)}
 
-/* BOTTOM */
 .btm{position:fixed;bottom:0;left:0;right:0;z-index:100;padding:10px 12px 20px;display:none;flex-direction:column;gap:8px}
 
-/* CARDS */
 .cards{display:flex;gap:8px}
 .card{flex:1;background:rgba(15,17,23,0.8);backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px}
 .clabel{font-size:9px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:3px;font-family:'DM Mono',monospace}
@@ -59,7 +53,6 @@ header{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:
 .fd{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,0.1);transition:background 0.15s}
 .fd.up{background:var(--green)}
 
-/* COLOR ROW */
 .clr-row{background:rgba(15,17,23,0.8);backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px;display:none;align-items:center;gap:10px}
 .clr-row.vis{display:flex}
 .clr-label{font-size:9px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:0.6px;font-family:'DM Mono',monospace;white-space:nowrap}
@@ -69,7 +62,6 @@ header{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:
 .bsize{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--text2)}
 .bsize input{width:55px;accent-color:var(--accent)}
 
-/* BUTTONS */
 .btns{display:flex;gap:8px}
 .cbtn{flex:1;background:rgba(15,17,23,0.8);backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:var(--radius);padding:10px 6px;font-size:10px;font-weight:600;color:var(--text2);font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.15s;display:flex;flex-direction:column;align-items:center;gap:3px}
 .cbtn .ic{font-size:16px}
@@ -77,15 +69,16 @@ header{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:
 .cbtn.on{background:linear-gradient(135deg,rgba(59,130,246,0.25),rgba(139,92,246,0.25));border-color:rgba(59,130,246,0.4);color:white}
 .cbtn.clr-btn{background:rgba(239,68,68,0.15);border-color:rgba(239,68,68,0.3);color:var(--red)}
 
-/* TOAST */
 .toast{position:fixed;top:72px;left:50%;transform:translateX(-50%) translateY(-10px);background:rgba(15,17,23,0.95);border:1px solid var(--border);color:var(--text);padding:8px 18px;border-radius:100px;font-size:12px;font-weight:500;opacity:0;transition:all 0.25s;z-index:300;white-space:nowrap;pointer-events:none}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-/* ERROR */
 #errMsg{display:none;position:fixed;inset:0;background:var(--bg);z-index:300;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:32px;text-align:center}
 #errMsg h2{color:var(--red);font-size:20px}
-#errMsg p{color:var(--text2);font-size:14px;line-height:1.7;max-width:300px}
+#errMsg p{color:var(--text2);font-size:14px;line-height:1.7;max-width:300px;white-space:pre-wrap}
 #errMsg button{background:var(--accent);color:white;border:none;padding:12px 28px;border-radius:100px;font-size:14px;font-weight:600;cursor:pointer}
+
+#debugLog{position:fixed;top:60px;left:10px;z-index:150;max-width:260px;max-height:200px;overflow:auto;background:rgba(0,0,0,0.8);border:1px solid var(--border);border-radius:8px;padding:8px;font-size:10px;font-family:'DM Mono',monospace;color:var(--text2);display:none}
+#debugLog b{color:var(--accent)}
 </style>
 <base target="_blank">
 </head>
@@ -107,6 +100,7 @@ header{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:
 </div>
 
 <div class="toast" id="toast"></div>
+<div id="debugLog"></div>
 
 <div class="cam-wrap">
   <video id="videoEl" autoplay playsinline muted></video>
@@ -167,11 +161,22 @@ header{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:
   </div>
 </div>
 
-<!-- TensorFlow.js + Handpose -->
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.17.0/dist/tf.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/hand-pose-detection@2.0.0/dist/hand-pose-detection.min.js"></script>
+<!-- MediaPipe CDN (WASM) - Much more reliable than TFJS -->
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240/hands.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils@0.3.1675466862/camera_utils.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils@0.3.1675466124/drawing_utils.js" crossorigin="anonymous"></script>
 
 <script>
+// ── DEBUG LOGGER ──
+const debugEl = document.getElementById('debugLog');
+function log(msg) {
+  console.log(msg);
+  const line = document.createElement('div');
+  line.textContent = '> ' + msg;
+  debugEl.appendChild(line);
+  debugEl.scrollTop = debugEl.scrollHeight;
+}
+
 // ── STATE ──
 const S = {
   skel: true, draw: true, cnt: true,
@@ -182,41 +187,15 @@ const S = {
 
 const COLORS = ['#3b82f6','#8b5cf6','#10b981','#f59e0b','#ef4444','#ec4899','#06b6d4','#ffffff'];
 
-const CONNECTIONS = [
-  [0,1],[1,2],[2,3],[3,4],
-  [0,5],[5,6],[6,7],[7,8],
-  [5,9],[9,10],[10,11],[11,12],
-  [9,13],[13,14],[14,15],[15,16],
-  [13,17],[17,18],[18,19],[19,20],
-  [0,17]
-];
-const TIPS = [4,8,12,16,20];
-const BASES = [3,6,10,14,18];
-
 const video = document.getElementById('videoEl');
 const canvas = document.getElementById('canvasEl');
 const drawCanvas = document.getElementById('drawCanvas');
 const ctx = canvas.getContext('2d');
 const dctx = drawCanvas.getContext('2d');
 
-let W=0, H=0, detector=null;
+let W=0, H=0, hands=null, camera=null;
 let lastT = performance.now(), frames = 0;
 let running = false;
-
-// ── COORDINATE HELPERS (Fix #1) ──
-// TFJS hand-pose-detection returns normalized coords (0-1).
-// If pixel coords (>1) are detected, we normalize them.
-function normX(kp) {
-  const v = (kp.x > 1.0 && video.videoWidth > 0) ? (kp.x / video.videoWidth) : kp.x;
-  return (1 - v) * W; // mirror for selfie camera
-}
-function normY(kp) {
-  const v = (kp.y > 1.0 && video.videoHeight > 0) ? (kp.y / video.videoHeight) : kp.y;
-  return v * H;
-}
-function normVal(v, max) {
-  return (v > 1.0 && max > 0) ? (v / max) : v;
-}
 
 // ── COLORS INIT ──
 function initColors() {
@@ -289,39 +268,32 @@ function drawPath(path) {
   dctx.stroke();
 }
 
+// ── COORDINATE CONVERTER ──
+// MediaPipe returns normalized coords (0-1). Mirror for selfie camera.
+function toScreenX(x) { return (1 - x) * W; }
+function toScreenY(y) { return y * H; }
+
 // ── FINGER COUNT ──
-function countFingers(kp) {
+function countFingers(landmarks) {
+  const lm = landmarks;
   const up = [];
-  const lm = {};
-  kp.forEach(k => lm[k.name] = k);
 
-  // Thumb
-  const tx = lm['thumb_tip']?.x ?? 0;
-  const tbx = lm['thumb_ip']?.x ?? 0;
-  const wx = lm['wrist']?.x ?? 0;
-  const mx = lm['middle_finger_mcp']?.x ?? 0;
-  const right = wx > mx;
-  up.push(right ? tx < tbx : tx > tbx);
+  // Thumb: compare x with IP joint
+  const right = lm[0].x < lm[9].x; // wrist vs middle_mcp
+  up.push(right ? lm[4].x < lm[3].x : lm[4].x > lm[3].x);
 
-  // Fingers
-  const names = [
-    ['index_finger_tip','index_finger_pip'],
-    ['middle_finger_tip','middle_finger_pip'],
-    ['ring_finger_tip','ring_finger_pip'],
-    ['pinky_tip','pinky_pip'],
-  ];
-  names.forEach(([tip,base]) => {
-    const ty = lm[tip]?.y ?? 0;
-    const by = lm[base]?.y ?? 0;
-    up.push(ty < by);
-  });
+  // Other 4 fingers: tip y < pip y (upwards)
+  up.push(lm[8].y < lm[6].y);   // Index
+  up.push(lm[12].y < lm[10].y);  // Middle
+  up.push(lm[16].y < lm[14].y);  // Ring
+  up.push(lm[20].y < lm[18].y);  // Pinky
 
   return { count: up.filter(Boolean).length, up };
 }
 
 // ── GESTURE ──
-function gesture(kp) {
-  const {count, up} = countFingers(kp);
+function gesture(landmarks) {
+  const {count, up} = countFingers(landmarks);
   if(count===5) return '🖐️ Open';
   if(count===0) return '✊ Fist';
   if(!up[0]&&up[1]&&up[2]&&!up[3]&&!up[4]) return '✌️ Peace';
@@ -332,30 +304,37 @@ function gesture(kp) {
   return count + ' আঙুল';
 }
 
-// ── SKELETON ──
-function drawSkeleton(kp) {
+// ── SKELETON DRAWING ──
+function drawSkeleton(landmarks) {
   if(!S.skel) return;
-  const pos = {};
-  kp.forEach(k => pos[k.name] = { x: normX(k), y: normY(k) });
 
-  const names = kp.map(k=>k.name);
-  CONNECTIONS.forEach(([ai,bi]) => {
-    const an = names[ai], bn = names[bi];
-    if(!pos[an]||!pos[bn]) return;
-    const g = ctx.createLinearGradient(pos[an].x,pos[an].y,pos[bn].x,pos[bn].y);
+  const connections = [
+    [0,1],[1,2],[2,3],[3,4],
+    [0,5],[5,6],[6,7],[7,8],
+    [5,9],[9,10],[10,11],[11,12],
+    [9,13],[13,14],[14,15],[15,16],
+    [13,17],[17,18],[18,19],[19,20],
+    [0,17]
+  ];
+
+  // Draw connections
+  connections.forEach(([a,b]) => {
+    const p1 = {x: toScreenX(landmarks[a].x), y: toScreenY(landmarks[a].y)};
+    const p2 = {x: toScreenX(landmarks[b].x), y: toScreenY(landmarks[b].y)};
+    const g = ctx.createLinearGradient(p1.x,p1.y,p2.x,p2.y);
     g.addColorStop(0,'rgba(59,130,246,0.85)');
     g.addColorStop(1,'rgba(139,92,246,0.85)');
     ctx.beginPath();
-    ctx.moveTo(pos[an].x,pos[an].y);
-    ctx.lineTo(pos[bn].x,pos[bn].y);
+    ctx.moveTo(p1.x,p1.y);
+    ctx.lineTo(p2.x,p2.y);
     ctx.strokeStyle=g; ctx.lineWidth=2.5; ctx.lineCap='round';
     ctx.stroke();
   });
 
-  kp.forEach((k,i) => {
-    const p = pos[k.name];
-    if(!p) return;
-    const isTip = TIPS.includes(i);
+  // Draw joints
+  landmarks.forEach((lm,i) => {
+    const p = {x: toScreenX(lm.x), y: toScreenY(lm.y)};
+    const isTip = [4,8,12,16,20].includes(i);
     ctx.beginPath();
     ctx.arc(p.x,p.y,isTip?7:4,0,Math.PI*2);
     ctx.fillStyle = isTip?'rgba(59,130,246,0.95)':i===0?'rgba(16,185,129,0.95)':'rgba(255,255,255,0.9)';
@@ -365,23 +344,15 @@ function drawSkeleton(kp) {
 }
 
 // ── DRAWING ──
-function handleDraw(kp) {
-  const lm = {};
-  kp.forEach(k => lm[k.name]=k);
-  const tip = lm['index_finger_tip'];
-  const thumb = lm['thumb_tip'];
-  if(!tip||!thumb) return;
+function handleDraw(landmarks) {
+  const tip = landmarks[8];   // index_finger_tip
+  const thumb = landmarks[4]; // thumb_tip
 
-  const px = normX(tip);
-  const py = normY(tip);
+  const px = toScreenX(tip.x);
+  const py = toScreenY(tip.y);
 
-  // Fix #2: normalized distance calculation
-  const tipX = normVal(tip.x, video.videoWidth);
-  const tipY = normVal(tip.y, video.videoHeight);
-  const thumbX = normVal(thumb.x, video.videoWidth);
-  const thumbY = normVal(thumb.y, video.videoHeight);
-  const dist = Math.hypot(tipX - thumbX, tipY - thumbY);
-  const pinch = dist < 0.08; // threshold for normalized coords
+  const dist = Math.hypot(tip.x - thumb.x, tip.y - thumb.y);
+  const pinch = dist < 0.08; // normalized threshold
 
   if(S.draw && pinch) {
     document.getElementById('drawStat').textContent='ON';
@@ -416,7 +387,7 @@ function handleDraw(kp) {
     document.getElementById('drawStat').style.color='var(--text2)';
   }
 
-  // Cursor
+  // Cursor dot
   ctx.beginPath();
   ctx.arc(px,py,pinch&&S.draw?6:10,0,Math.PI*2);
   ctx.strokeStyle=pinch&&S.draw?S.color:'rgba(255,255,255,0.7)';
@@ -427,46 +398,44 @@ function handleDraw(kp) {
   }
 }
 
-// ── LOOP ──
-async function loop() {
+// ── MAIN LOOP ──
+function onResults(results) {
   if(!running) return;
-  try {
-    const hands = await detector.estimateHands(video,{flipHorizontal:false});
 
-    // Fix #3: Filter low-confidence detections (prevents false "hand 1")
-    const validHands = hands.filter(h => (h.score || 0) > 0.3);
+  ctx.clearRect(0,0,W,H);
 
-    ctx.clearRect(0,0,W,H);
+  // FPS
+  frames++;
+  const now=performance.now();
+  if(now-lastT>=1000){
+    document.getElementById('fpsVal').textContent=frames;
+    frames=0; lastT=now;
+  }
 
-    // FPS
-    frames++;
-    const now=performance.now();
-    if(now-lastT>=1000){
-      document.getElementById('fpsVal').textContent=frames;
-      frames=0; lastT=now;
+  const handCount = results.multiHandLandmarks ? results.multiHandLandmarks.length : 0;
+  document.getElementById('handCount').textContent=handCount;
+  log('Frame: hands=' + handCount);
+
+  if(handCount > 0 && results.multiHandLandmarks[0]){
+    const lm = results.multiHandLandmarks[0];
+
+    drawSkeleton(lm);
+
+    if(S.cnt){
+      const {count,up}=countFingers(lm);
+      document.getElementById('fingerVal').textContent=count;
+      for(let i=0;i<5;i++) document.getElementById('fd'+i).classList.toggle('up',up[i]);
+      document.getElementById('gestVal').textContent=gesture(lm);
     }
 
-    document.getElementById('handCount').textContent=validHands.length;
-
-    if(validHands.length>0){
-      const kp=validHands[0].keypoints;
-      drawSkeleton(kp);
-      if(S.cnt){
-        const {count,up}=countFingers(kp);
-        document.getElementById('fingerVal').textContent=count;
-        for(let i=0;i<5;i++) document.getElementById('fd'+i).classList.toggle('up',up[i]);
-        document.getElementById('gestVal').textContent=gesture(kp);
-      }
-      handleDraw(kp);
-    } else {
-      document.getElementById('fingerVal').textContent='0';
-      document.getElementById('gestVal').textContent='—';
-      document.getElementById('drawStat').textContent='OFF';
-      for(let i=0;i<5;i++) document.getElementById('fd'+i).classList.remove('up');
-      S.pinching=false;
-    }
-  } catch(e){console.warn(e);}
-  requestAnimationFrame(loop);
+    handleDraw(lm);
+  } else {
+    document.getElementById('fingerVal').textContent='0';
+    document.getElementById('gestVal').textContent='—';
+    document.getElementById('drawStat').textContent='OFF';
+    for(let i=0;i<5;i++) document.getElementById('fd'+i).classList.remove('up');
+    S.pinching=false;
+  }
 }
 
 // ── START ──
@@ -476,22 +445,34 @@ document.getElementById('startBtn').onclick = async function(){
   const fill=document.getElementById('progFill');
   const msg=document.getElementById('loadMsg');
   prog.style.display='block';
+  debugEl.style.display='block';
 
   try {
-    msg.textContent='📦 TensorFlow লোড হচ্ছে...';
+    msg.textContent='📦 MediaPipe লোড হচ্ছে...';
     fill.style.width='20%';
-    await tf.ready();
+    log('Loading MediaPipe...');
 
-    msg.textContent='🤖 Hand model লোড হচ্ছে...';
+    if(typeof window.Hands === 'undefined'){
+      throw new Error('MediaPipe Hands library load হয়নি। CDN blocked হতে পারে।');
+    }
+
+    msg.textContent='🤖 Hand model তৈরি হচ্ছে...';
     fill.style.width='50%';
-    detector = await handPoseDetection.createDetector(
-      handPoseDetection.SupportedModels.MediaPipeHands,
-      {
-        runtime: 'tfjs',
-        modelType: 'lite',
-        maxHands: 1,
-      }
-    );
+
+    hands = new window.Hands({locateFile: (file) => {
+      log('Loading: ' + file);
+      return `https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240/${file}`;
+    }});
+
+    hands.setOptions({
+      maxNumHands: 1,
+      modelComplexity: 1,
+      minDetectionConfidence: 0.5,
+      minTrackingConfidence: 0.5
+    });
+
+    hands.onResults(onResults);
+    log('Hands initialized');
 
     msg.textContent='📷 ক্যামেরা চালু হচ্ছে...';
     fill.style.width='75%';
@@ -501,15 +482,29 @@ document.getElementById('startBtn').onclick = async function(){
     });
     video.srcObject=stream;
 
-    // Wait for video dimensions to be available
-    await new Promise((resolve) => {
+    await new Promise((resolve, reject) => {
       video.onloadedmetadata = () => {
         video.play();
+        log('Video ready: ' + video.videoWidth + 'x' + video.videoHeight);
         resolve();
       };
+      video.onerror = (e) => reject(new Error('Video error'));
+      setTimeout(() => reject(new Error('Video load timeout')), 10000);
     });
 
     resize();
+
+    // Send frames to MediaPipe
+    log('Starting camera loop...');
+    const sendFrame = async () => {
+      if(!running) return;
+      try {
+        await hands.send({image: video});
+      } catch(e) {
+        log('Send error: ' + e.message);
+      }
+      requestAnimationFrame(sendFrame);
+    };
 
     fill.style.width='100%';
     msg.textContent='✅ প্রস্তুত!';
@@ -520,20 +515,20 @@ document.getElementById('startBtn').onclick = async function(){
       document.getElementById('splash').classList.add('hidden');
       document.getElementById('btm').style.display='flex';
       document.getElementById('topRight').style.display='flex';
-      const d=document.getElementById('sdot');
-      d.classList.add('on');
+      document.getElementById('sdot').classList.add('on');
       document.getElementById('stxt').textContent='Live';
       running=true;
-      loop();
+      sendFrame();
       toast('🖐️ হাত দেখাও! Pinch করে আঁকো!');
     }, 600);
 
   } catch(err){
     prog.style.display='none';
+    log('ERROR: ' + err.name + ' - ' + err.message);
     document.getElementById('errTxt').textContent =
       err.name==='NotAllowedError'
         ? 'Camera permission দাও। Browser settings > Camera > Allow করো।'
-        : 'সমস্যা: ' + err.message + '\n\nChrome browser ব্যবহার করো এবং HTTPS দরকার (GitHub Pages)।';
+        : 'Error: ' + err.message + '\n\nChrome + HTTPS (GitHub Pages) ব্যবহার করো।\n\nConsole (F12) দেখো।';
     document.getElementById('errMsg').style.display='flex';
   }
 };
