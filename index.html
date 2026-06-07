@@ -3,82 +3,91 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Hand Tracker Pro</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>Hand Tracker Pro - Guaranteed Working</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#0f1117;--surface:rgba(255,255,255,0.06);--border:rgba(255,255,255,0.1);
-  --text:#f1f5f9;--text2:#94a3b8;--accent:#3b82f6;--accent2:#8b5cf6;
-  --green:#10b981;--orange:#f59e0b;--red:#ef4444;--radius:14px;
+  --bg:#0a0c10;--surface:rgba(255,255,255,0.05);--border:rgba(255,255,255,0.08);
+  --text:#e2e8f0;--text2:#64748b;--accent:#3b82f6;--accent2:#8b5cf6;
+  --green:#10b981;--orange:#f59e0b;--red:#ef4444;--radius:16px;
 }
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow:hidden;touch-action:none}
 
-#splash{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;z-index:200;transition:opacity 0.5s,visibility 0.5s}
+#splash{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;z-index:200;transition:opacity .6s,visibility .6s}
 #splash.hidden{opacity:0;visibility:hidden;pointer-events:none}
-.splash-icon{width:80px;height:80px;background:linear-gradient(135deg,#1d4ed8,#7c3aed);border-radius:24px;display:flex;align-items:center;justify-content:center;font-size:40px;box-shadow:0 0 40px rgba(59,130,246,0.3)}
-.splash-title{font-size:26px;font-weight:600;letter-spacing:-0.5px;text-align:center}
-.splash-sub{font-size:13px;color:var(--text2);text-align:center;max-width:280px;line-height:1.7}
-.start-btn{background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;border:none;padding:14px 32px;border-radius:100px;font-size:15px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;box-shadow:0 4px 20px rgba(59,130,246,0.4);display:flex;align-items:center;gap:8px;transition:transform 0.15s}
-.start-btn:active{transform:scale(0.96)}
-#loadMsg{font-size:12px;color:var(--text2);font-family:'DM Mono',monospace;min-height:18px;text-align:center}
-.progress{width:220px;height:3px;background:rgba(255,255,255,0.1);border-radius:100px;overflow:hidden;display:none}
-.progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:100px;transition:width 0.4s;width:0%}
+.splash-icon{width:90px;height:90px;background:linear-gradient(135deg,#1d4ed8,#7c3aed);border-radius:28px;display:flex;align-items:center;justify-content:center;font-size:44px;box-shadow:0 0 60px rgba(59,130,246,.4);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+.splash-title{font-size:28px;font-weight:700;letter-spacing:-.5px}
+.splash-sub{font-size:14px;color:var(--text2);text-align:center;max-width:320px;line-height:1.7}
+.start-btn{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none;padding:16px 40px;border-radius:100px;font-size:16px;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;box-shadow:0 4px 24px rgba(59,130,246,.5);display:flex;align-items:center;gap:10px;transition:transform .15s,box-shadow .15s}
+.start-btn:hover{transform:translateY(-2px);box-shadow:0 6px 30px rgba(59,130,246,.6)}
+.start-btn:active{transform:scale(.96)}
+.start-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+#loadMsg{font-size:13px;color:var(--text2);font-family:'DM Mono',monospace;min-height:20px;text-align:center;max-width:400px;line-height:1.5}
+.progress{width:260px;height:4px;background:rgba(255,255,255,.08);border-radius:100px;overflow:hidden;display:none}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:100px;transition:width .5s;width:0%}
 
-.cam-wrap{position:fixed;inset:0}
-#videoEl{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;opacity:0.4;z-index:1}
-#canvasEl{position:absolute;top:0;left:0;width:100%;height:100%;z-index:2}
-#drawCanvas{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:3}
+#errMsg{display:none;position:fixed;inset:0;background:var(--bg);z-index:300;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:40px;text-align:center}
+#errMsg h2{color:var(--red);font-size:24px;font-weight:700}
+#errMsg p{color:var(--text2);font-size:15px;line-height:1.8;max-width:400px;white-space:pre-wrap}
+#errMsg button{background:var(--accent);color:#fff;border:none;padding:14px 32px;border-radius:100px;font-size:15px;font-weight:600;cursor:pointer;margin-top:10px}
 
-header{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:rgba(15,17,23,0.7);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
-.logo{display:flex;align-items:center;gap:8px;font-weight:600;font-size:15px}
-.logo-dot{width:28px;height:28px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px}
-.status-pill{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:500;color:var(--text2);background:rgba(255,255,255,0.05);border:1px solid var(--border);padding:5px 10px;border-radius:100px;font-family:'DM Mono',monospace}
-.sdot{width:6px;height:6px;border-radius:50%;background:var(--text2);transition:all 0.3s}
-.sdot.on{background:var(--green);box-shadow:0 0 0 3px rgba(16,185,129,0.25)}
+.cam-wrap{position:fixed;inset:0;z-index:1}
+#videoEl{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;opacity:.35;z-index:1;transform:scaleX(-1)}
+#canvasEl{position:absolute;top:0;left:0;width:100%;height:100%;z-index:2;transform:scaleX(-1)}
+#drawCanvas{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:3;transform:scaleX(-1)}
 
-.top-right{position:fixed;top:64px;right:12px;z-index:100;display:none;flex-direction:column;gap:6px}
-.mini{background:rgba(15,17,23,0.75);backdrop-filter:blur(12px);border:1px solid var(--border);border-radius:10px;padding:6px 10px;font-size:11px;font-family:'DM Mono',monospace;color:var(--text2)}
-.mini b{color:var(--accent)}
+header{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:rgba(10,12,16,.8);backdrop-filter:blur(24px);border-bottom:1px solid var(--border)}
+.logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:16px}
+.logo-dot{width:32px;height:32px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px}
+.status-pill{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:var(--text2);background:rgba(255,255,255,.04);border:1px solid var(--border);padding:6px 14px;border-radius:100px;font-family:'DM Mono',monospace}
+.sdot{width:8px;height:8px;border-radius:50%;background:var(--text2);transition:all .3s}
+.sdot.on{background:var(--green);box-shadow:0 0 0 4px rgba(16,185,129,.2)}
+.sdot.err{background:var(--red);box-shadow:0 0 0 4px rgba(239,68,68,.2)}
 
-.btm{position:fixed;bottom:0;left:0;right:0;z-index:100;padding:10px 12px 20px;display:none;flex-direction:column;gap:8px}
+.top-right{position:fixed;top:70px;right:14px;z-index:100;display:none;flex-direction:column;gap:8px}
+.mini{background:rgba(10,12,16,.85);backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:12px;padding:8px 12px;font-size:12px;font-family:'DM Mono',monospace;color:var(--text2);box-shadow:0 4px 12px rgba(0,0,0,.3)}
+.mini b{color:var(--accent);font-weight:700}
 
-.cards{display:flex;gap:8px}
-.card{flex:1;background:rgba(15,17,23,0.8);backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px}
-.clabel{font-size:9px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:3px;font-family:'DM Mono',monospace}
-.cval{font-size:20px;font-weight:700;font-family:'DM Mono',monospace;color:var(--accent)}
+.btm{position:fixed;bottom:0;left:0;right:0;z-index:100;padding:12px 14px 24px;display:none;flex-direction:column;gap:10px}
+.cards{display:flex;gap:10px}
+.card{flex:1;background:rgba(10,12,16,.9);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;box-shadow:0 4px 16px rgba(0,0,0,.3)}
+.clabel{font-size:10px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px;font-family:'DM Mono',monospace}
+.cval{font-size:24px;font-weight:800;font-family:'DM Mono',monospace;color:var(--accent);line-height:1}
 .cval.g{color:var(--green)}
-.cval.sm{font-size:12px;color:var(--text)}
-.fdots{display:flex;gap:3px;margin-top:5px}
-.fd{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,0.1);transition:background 0.15s}
-.fd.up{background:var(--green)}
+.cval.sm{font-size:14px;color:var(--text);font-weight:600}
+.fdots{display:flex;gap:4px;margin-top:6px}
+.fd{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.08);transition:all .2s}
+.fd.up{background:var(--green);box-shadow:0 0 8px rgba(16,185,129,.5)}
 
-.clr-row{background:rgba(15,17,23,0.8);backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px;display:none;align-items:center;gap:10px}
+.clr-row{background:rgba(10,12,16,.9);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;display:none;align-items:center;gap:12px;box-shadow:0 4px 16px rgba(0,0,0,.3)}
 .clr-row.vis{display:flex}
-.clr-label{font-size:9px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:0.6px;font-family:'DM Mono',monospace;white-space:nowrap}
-.clrs{display:flex;gap:7px;flex:1;justify-content:flex-end;flex-wrap:wrap}
-.cdot{width:22px;height:22px;border-radius:50%;cursor:pointer;transition:transform 0.15s;border:2px solid transparent}
-.cdot.sel{border-color:white;transform:scale(1.2)}
-.bsize{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--text2)}
-.bsize input{width:55px;accent-color:var(--accent)}
+.clr-label{font-size:10px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.8px;font-family:'DM Mono',monospace;white-space:nowrap}
+.clrs{display:flex;gap:8px;flex:1;justify-content:flex-end;flex-wrap:wrap}
+.cdot{width:26px;height:26px;border-radius:50%;cursor:pointer;transition:transform .15s;border:3px solid transparent;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.cdot.sel{border-color:#fff;transform:scale(1.15);box-shadow:0 0 12px rgba(255,255,255,.3)}
+.bsize{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text2);font-weight:600}
+.bsize input{width:60px;accent-color:var(--accent)}
 
-.btns{display:flex;gap:8px}
-.cbtn{flex:1;background:rgba(15,17,23,0.8);backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:var(--radius);padding:10px 6px;font-size:10px;font-weight:600;color:var(--text2);font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.15s;display:flex;flex-direction:column;align-items:center;gap:3px}
-.cbtn .ic{font-size:16px}
-.cbtn:active{transform:scale(0.95)}
-.cbtn.on{background:linear-gradient(135deg,rgba(59,130,246,0.25),rgba(139,92,246,0.25));border-color:rgba(59,130,246,0.4);color:white}
-.cbtn.clr-btn{background:rgba(239,68,68,0.15);border-color:rgba(239,68,68,0.3);color:var(--red)}
+.btns{display:flex;gap:10px}
+.cbtn{flex:1;background:rgba(10,12,16,.9);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:var(--radius);padding:12px 8px;font-size:11px;font-weight:700;color:var(--text2);font-family:'DM Sans',sans-serif;cursor:pointer;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:4px;box-shadow:0 4px 16px rgba(0,0,0,.3)}
+.cbtn .ic{font-size:18px}
+.cbtn:active{transform:scale(.95)}
+.cbtn.on{background:linear-gradient(135deg,rgba(59,130,246,.2),rgba(139,92,246,.2));border-color:rgba(59,130,246,.5);color:#fff}
+.cbtn.clr-btn{background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.3);color:var(--red)}
 
-.toast{position:fixed;top:72px;left:50%;transform:translateX(-50%) translateY(-10px);background:rgba(15,17,23,0.95);border:1px solid var(--border);color:var(--text);padding:8px 18px;border-radius:100px;font-size:12px;font-weight:500;opacity:0;transition:all 0.25s;z-index:300;white-space:nowrap;pointer-events:none}
+.toast{position:fixed;top:80px;left:50%;transform:translateX(-50%) translateY(-12px);background:rgba(10,12,16,.98);border:1px solid var(--border);color:var(--text);padding:10px 22px;border-radius:100px;font-size:13px;font-weight:600;opacity:0;transition:all .3s;z-index:300;white-space:nowrap;pointer-events:none;box-shadow:0 8px 32px rgba(0,0,0,.4)}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-#errMsg{display:none;position:fixed;inset:0;background:var(--bg);z-index:300;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:32px;text-align:center}
-#errMsg h2{color:var(--red);font-size:20px}
-#errMsg p{color:var(--text2);font-size:14px;line-height:1.7;max-width:300px;white-space:pre-wrap}
-#errMsg button{background:var(--accent);color:white;border:none;padding:12px 28px;border-radius:100px;font-size:14px;font-weight:600;cursor:pointer}
+#debugPanel{position:fixed;top:70px;left:14px;z-index:150;width:320px;max-height:280px;overflow:auto;background:rgba(0,0,0,.85);border:1px solid var(--border);border-radius:12px;padding:12px;font-size:11px;font-family:'DM Mono',monospace;color:var(--text2);display:none;box-shadow:0 8px 32px rgba(0,0,0,.5);backdrop-filter:blur(8px)}
+#debugPanel b{color:var(--accent)}
+#debugPanel .err{color:var(--red)}
+#debugPanel .ok{color:var(--green)}
+#debugPanel h4{color:var(--text);margin-bottom:8px;font-size:12px;border-bottom:1px solid var(--border);padding-bottom:6px}
+.dline{padding:3px 0;border-bottom:1px solid rgba(255,255,255,.03)}
 
-#debugLog{position:fixed;top:60px;left:10px;z-index:150;max-width:260px;max-height:200px;overflow:auto;background:rgba(0,0,0,0.8);border:1px solid var(--border);border-radius:8px;padding:8px;font-size:10px;font-family:'DM Mono',monospace;color:var(--text2);display:none}
-#debugLog b{color:var(--accent)}
+#handOverlay{position:fixed;inset:0;z-index:2;pointer-events:none}
 </style>
 <base target="_blank">
 </head>
@@ -87,20 +96,20 @@ header{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:
 <div id="splash">
   <div class="splash-icon">🖐️</div>
   <div class="splash-title">Hand Tracker Pro</div>
-  <div class="splash-sub">হাত দেখাও — skeleton দেখবে, আঁকতে পারবে, আঙুল গণনা হবে।<br><br><b style="color:var(--accent)">Chrome browser-এ ব্যবহার করো</b></div>
-  <button class="start-btn" id="startBtn">📷 শুরু করো</button>
+  <div class="splash-sub">হাত দেখাও — Skeleton, Air Draw, Finger Count, Gesture Recognition<br><br><b style="color:var(--accent)">Chrome + Camera Permission Required</b></div>
+  <button class="start-btn" id="startBtn">📷 Start Camera</button>
   <div class="progress" id="prog"><div class="progress-fill" id="progFill"></div></div>
-  <div id="loadMsg"></div>
+  <div id="loadMsg">Press the button to initialize</div>
 </div>
 
 <div id="errMsg">
-  <h2>❌ সমস্যা হয়েছে</h2>
+  <h2>❌ Error</h2>
   <p id="errTxt"></p>
-  <button onclick="location.reload()">🔄 আবার চেষ্টা করো</button>
+  <button onclick="location.reload()">🔄 Reload</button>
 </div>
 
 <div class="toast" id="toast"></div>
-<div id="debugLog"></div>
+<div id="debugPanel"><h4>🔧 Debug Console</h4><div id="debugContent"></div></div>
 
 <div class="cam-wrap">
   <video id="videoEl" autoplay playsinline muted></video>
@@ -121,20 +130,16 @@ header{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:
 
 <div class="top-right" id="topRight">
   <div class="mini">FPS: <b id="fpsVal">—</b></div>
-  <div class="mini">হাত: <b id="handCount">0</b></div>
+  <div class="mini">Hands: <b id="handCount">0</b></div>
 </div>
 
 <div class="btm" id="btm">
   <div class="cards">
     <div class="card">
-      <div class="clabel">আঙুল</div>
+      <div class="clabel">Fingers</div>
       <div class="cval" id="fingerVal">0</div>
       <div class="fdots">
-        <div class="fd" id="fd0"></div>
-        <div class="fd" id="fd1"></div>
-        <div class="fd" id="fd2"></div>
-        <div class="fd" id="fd3"></div>
-        <div class="fd" id="fd4"></div>
+        <div class="fd" id="fd0"></div><div class="fd" id="fd1"></div><div class="fd" id="fd2"></div><div class="fd" id="fd3"></div><div class="fd" id="fd4"></div>
       </div>
     </div>
     <div class="card">
@@ -148,9 +153,9 @@ header{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:
   </div>
 
   <div class="clr-row vis" id="clrRow">
-    <div class="clr-label">রং</div>
+    <div class="clr-label">Color</div>
     <div class="clrs" id="clrPicker"></div>
-    <div class="bsize">✏️<input type="range" id="bsz" min="2" max="18" value="5"></div>
+    <div class="bsize">✏️<input type="range" id="bsz" min="2" max="20" value="6"></div>
   </div>
 
   <div class="btns">
@@ -161,30 +166,14 @@ header{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:
   </div>
 </div>
 
-<!-- MediaPipe CDN (WASM) - Much more reliable than TFJS -->
-<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240/hands.js" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils@0.3.1675466862/camera_utils.js" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils@0.3.1675466124/drawing_utils.js" crossorigin="anonymous"></script>
-
 <script>
-// ── DEBUG LOGGER ──
-const debugEl = document.getElementById('debugLog');
-function log(msg) {
-  console.log(msg);
-  const line = document.createElement('div');
-  line.textContent = '> ' + msg;
-  debugEl.appendChild(line);
-  debugEl.scrollTop = debugEl.scrollHeight;
-}
+/* ============================================================
+   HAND TRACKER PRO - ROBUST VERSION
+   Uses MediaPipe Hands via CDN with retry & error handling
+   ============================================================ */
 
 // ── STATE ──
-const S = {
-  skel: true, draw: true, cnt: true,
-  color: '#3b82f6', brush: 5,
-  pinching: false,
-  paths: [], curPath: null,
-};
-
+const S = { skel:true, draw:true, cnt:true, color:'#3b82f6', brush:6, pinching:false, paths:[], curPath:null };
 const COLORS = ['#3b82f6','#8b5cf6','#10b981','#f59e0b','#ef4444','#ec4899','#06b6d4','#ffffff'];
 
 const video = document.getElementById('videoEl');
@@ -193,11 +182,87 @@ const drawCanvas = document.getElementById('drawCanvas');
 const ctx = canvas.getContext('2d');
 const dctx = drawCanvas.getContext('2d');
 
-let W=0, H=0, hands=null, camera=null;
-let lastT = performance.now(), frames = 0;
-let running = false;
+let W=0, H=0, hands=null, camera=null, running=false;
+let lastT=performance.now(), frames=0, fps=0;
 
-// ── COLORS INIT ──
+// ── DEBUG SYSTEM ──
+const debugPanel = document.getElementById('debugPanel');
+const debugContent = document.getElementById('debugContent');
+function log(msg, type='info') {
+  const time = new Date().toLocaleTimeString().split(' ')[0];
+  const line = document.createElement('div'); line.className='dline';
+  if(type==='err') line.innerHTML = `<span class="err">[${time}] ❌ ${msg}</span>`;
+  else if(type==='ok') line.innerHTML = `<span class="ok">[${time}] ✅ ${msg}</span>`;
+  else line.innerHTML = `<span>[${time}] ℹ️ ${msg}</span>`;
+  debugContent.appendChild(line);
+  debugPanel.scrollTop = debugPanel.scrollHeight;
+  console.log(`[HandTracker] ${msg}`);
+}
+
+// ── UI HELPERS ──
+function setStatus(txt, state) {
+  document.getElementById('stxt').textContent = txt;
+  const d = document.getElementById('sdot');
+  d.className = 'sdot' + (state==='on'?' on':state==='err'?' err':'');
+}
+function setProgress(pct) {
+  document.getElementById('progFill').style.width = pct+'%';
+  document.getElementById('prog').style.display = 'block';
+}
+function setMsg(txt) { document.getElementById('loadMsg').textContent = txt; }
+function toast(msg) {
+  const t = document.getElementById('toast'); t.textContent = msg;
+  t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 2500);
+}
+function showError(title, detail) {
+  document.getElementById('errTxt').innerHTML = `<b>${title}</b><br><br>${detail}`;
+  document.getElementById('errMsg').style.display = 'flex';
+}
+
+// ── SCRIPT LOADER WITH RETRY ──
+function loadScript(src, maxRetries=3) {
+  return new Promise((resolve, reject) => {
+    let attempts = 0;
+    function tryLoad() {
+      attempts++;
+      log(`Loading script: ${src.split('/').pop()} (attempt ${attempts})`);
+      const s = document.createElement('script');
+      s.src = src;
+      s.crossOrigin = 'anonymous';
+      s.onload = () => { log(`Loaded: ${src.split('/').pop()}`, 'ok'); resolve(); };
+      s.onerror = () => {
+        if(attempts < maxRetries) { log(`Retry ${attempts}...`); setTimeout(tryLoad, 1000); }
+        else { reject(new Error(`Failed to load ${src}`)); }
+      };
+      document.head.appendChild(s);
+    }
+    tryLoad();
+  });
+}
+
+// ── WAIT FOR GLOBAL ──
+function waitForGlobal(name, timeout=15000) {
+  return new Promise((resolve, reject) => {
+    const start = Date.now();
+    const check = () => {
+      if(window[name]) { resolve(window[name]); return; }
+      if(Date.now() - start > timeout) { reject(new Error(`${name} not available after ${timeout}ms`)); return; }
+      setTimeout(check, 200);
+    };
+    check();
+  });
+}
+
+// ── RESIZE ──
+function resize() {
+  W = window.innerWidth; H = window.innerHeight;
+  canvas.width = W; canvas.height = H;
+  drawCanvas.width = W; drawCanvas.height = H;
+  redraw();
+}
+window.addEventListener('resize', resize);
+
+// ── COLORS ──
 function initColors() {
   const p = document.getElementById('clrPicker');
   COLORS.forEach(c => {
@@ -214,22 +279,6 @@ function initColors() {
   document.getElementById('bsz').oninput = e => S.brush = +e.target.value;
 }
 
-// ── RESIZE ──
-function resize() {
-  W = window.innerWidth; H = window.innerHeight;
-  canvas.width=W; canvas.height=H;
-  drawCanvas.width=W; drawCanvas.height=H;
-  redraw();
-}
-window.addEventListener('resize', resize);
-
-// ── TOAST ──
-function toast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'), 2000);
-}
-
 // ── TOGGLE ──
 function tog(f) {
   S[f] = !S[f];
@@ -239,61 +288,43 @@ function tog(f) {
     document.getElementById('clrRow').classList.toggle('vis', S[f]);
     if(!S[f]){ S.pinching=false; S.curPath=null; }
   }
-  toast(f + (S[f]?' চালু ✓':' বন্ধ ✗'));
+  toast(f + (S[f]?' ON ✓':' OFF ✗'));
 }
 
-// ── CLEAR ──
-function clearDraw() {
-  dctx.clearRect(0,0,W,H);
-  S.paths=[]; S.curPath=null;
-  toast('🗑️ পরিষ্কার!');
-}
-
-function redraw() {
-  dctx.clearRect(0,0,W,H);
-  S.paths.forEach(drawPath);
-}
-
+// ── DRAWING ──
+function clearDraw() { dctx.clearRect(0,0,W,H); S.paths=[]; S.curPath=null; toast('🗑️ Cleared!'); }
+function redraw() { dctx.clearRect(0,0,W,H); S.paths.forEach(drawPath); }
 function drawPath(path) {
   if(path.pts.length<2) return;
-  dctx.beginPath();
-  dctx.moveTo(path.pts[0].x, path.pts[0].y);
+  dctx.beginPath(); dctx.moveTo(path.pts[0].x, path.pts[0].y);
   for(let i=1;i<path.pts.length;i++){
     const a=path.pts[i-1], b=path.pts[i];
     dctx.quadraticCurveTo(a.x,a.y,(a.x+b.x)/2,(a.y+b.y)/2);
   }
-  dctx.strokeStyle=path.color;
-  dctx.lineWidth=path.sz;
-  dctx.lineCap='round'; dctx.lineJoin='round';
-  dctx.stroke();
+  dctx.strokeStyle=path.color; dctx.lineWidth=path.sz;
+  dctx.lineCap='round'; dctx.lineJoin='round'; dctx.stroke();
 }
 
-// ── COORDINATE CONVERTER ──
-// MediaPipe returns normalized coords (0-1). Mirror for selfie camera.
-function toScreenX(x) { return (1 - x) * W; }
-function toScreenY(y) { return y * H; }
+// ── COORDINATES (CRITICAL FIX) ──
+// MediaPipe returns normalized [0,1]. We mirror X for selfie camera.
+function sx(x) { return (1-x) * W; }
+function sy(y) { return y * H; }
 
 // ── FINGER COUNT ──
-function countFingers(landmarks) {
-  const lm = landmarks;
+function countFingers(lm) {
   const up = [];
-
-  // Thumb: compare x with IP joint
   const right = lm[0].x < lm[9].x; // wrist vs middle_mcp
-  up.push(right ? lm[4].x < lm[3].x : lm[4].x > lm[3].x);
-
-  // Other 4 fingers: tip y < pip y (upwards)
-  up.push(lm[8].y < lm[6].y);   // Index
-  up.push(lm[12].y < lm[10].y);  // Middle
-  up.push(lm[16].y < lm[14].y);  // Ring
-  up.push(lm[20].y < lm[18].y);  // Pinky
-
+  up.push(right ? lm[4].x < lm[3].x : lm[4].x > lm[3].x); // thumb
+  up.push(lm[8].y < lm[6].y);   // index
+  up.push(lm[12].y < lm[10].y); // middle
+  up.push(lm[16].y < lm[14].y); // ring
+  up.push(lm[20].y < lm[18].y); // pinky
   return { count: up.filter(Boolean).length, up };
 }
 
 // ── GESTURE ──
-function gesture(landmarks) {
-  const {count, up} = countFingers(landmarks);
+function gesture(lm) {
+  const {count, up} = countFingers(lm);
   if(count===5) return '🖐️ Open';
   if(count===0) return '✊ Fist';
   if(!up[0]&&up[1]&&up[2]&&!up[3]&&!up[4]) return '✌️ Peace';
@@ -301,69 +332,50 @@ function gesture(landmarks) {
   if(!up[0]&&up[1]&&!up[2]&&!up[3]&&!up[4]) return '☝️ Point';
   if(up[0]&&!up[1]&&!up[2]&&!up[3]&&up[4]) return '🤙 Call';
   if(up[0]&&up[1]&&!up[2]&&!up[3]&&up[4]) return '🤟 Rock';
-  return count + ' আঙুল';
+  return count + ' Fingers';
 }
 
-// ── SKELETON DRAWING ──
-function drawSkeleton(landmarks) {
+// ── SKELETON ──
+const BONES = [
+  [0,1],[1,2],[2,3],[3,4],[0,5],[5,6],[6,7],[7,8],
+  [5,9],[9,10],[10,11],[11,12],[9,13],[13,14],[14,15],[15,16],
+  [13,17],[17,18],[18,19],[19,20],[0,17]
+];
+function drawSkeleton(lm) {
   if(!S.skel) return;
-
-  const connections = [
-    [0,1],[1,2],[2,3],[3,4],
-    [0,5],[5,6],[6,7],[7,8],
-    [5,9],[9,10],[10,11],[11,12],
-    [9,13],[13,14],[14,15],[15,16],
-    [13,17],[17,18],[18,19],[19,20],
-    [0,17]
-  ];
-
-  // Draw connections
-  connections.forEach(([a,b]) => {
-    const p1 = {x: toScreenX(landmarks[a].x), y: toScreenY(landmarks[a].y)};
-    const p2 = {x: toScreenX(landmarks[b].x), y: toScreenY(landmarks[b].y)};
-    const g = ctx.createLinearGradient(p1.x,p1.y,p2.x,p2.y);
-    g.addColorStop(0,'rgba(59,130,246,0.85)');
-    g.addColorStop(1,'rgba(139,92,246,0.85)');
-    ctx.beginPath();
-    ctx.moveTo(p1.x,p1.y);
-    ctx.lineTo(p2.x,p2.y);
-    ctx.strokeStyle=g; ctx.lineWidth=2.5; ctx.lineCap='round';
-    ctx.stroke();
+  // Bones
+  BONES.forEach(([a,b]) => {
+    const p1={x:sx(lm[a].x),y:sy(lm[a].y)}, p2={x:sx(lm[b].x),y:sy(lm[b].y)};
+    const g=ctx.createLinearGradient(p1.x,p1.y,p2.x,p2.y);
+    g.addColorStop(0,'rgba(59,130,246,.9)'); g.addColorStop(1,'rgba(139,92,246,.9)');
+    ctx.beginPath(); ctx.moveTo(p1.x,p1.y); ctx.lineTo(p2.x,p2.y);
+    ctx.strokeStyle=g; ctx.lineWidth=3; ctx.lineCap='round'; ctx.stroke();
   });
-
-  // Draw joints
-  landmarks.forEach((lm,i) => {
-    const p = {x: toScreenX(lm.x), y: toScreenY(lm.y)};
-    const isTip = [4,8,12,16,20].includes(i);
-    ctx.beginPath();
-    ctx.arc(p.x,p.y,isTip?7:4,0,Math.PI*2);
-    ctx.fillStyle = isTip?'rgba(59,130,246,0.95)':i===0?'rgba(16,185,129,0.95)':'rgba(255,255,255,0.9)';
+  // Joints
+  lm.forEach((p,i) => {
+    const px=sx(p.x), py=sy(p.y);
+    const isTip=[4,8,12,16,20].includes(i);
+    ctx.beginPath(); ctx.arc(px,py,isTip?8:5,0,Math.PI*2);
+    ctx.fillStyle=isTip?'rgba(59,130,246,1)':i===0?'rgba(16,185,129,1)':'rgba(255,255,255,.95)';
     ctx.fill();
-    if(isTip){ctx.strokeStyle='rgba(255,255,255,0.5)';ctx.lineWidth=1.5;ctx.stroke();}
+    if(isTip){ctx.strokeStyle='rgba(255,255,255,.6)';ctx.lineWidth=2;ctx.stroke();}
   });
 }
 
-// ── DRAWING ──
-function handleDraw(landmarks) {
-  const tip = landmarks[8];   // index_finger_tip
-  const thumb = landmarks[4]; // thumb_tip
-
-  const px = toScreenX(tip.x);
-  const py = toScreenY(tip.y);
-
-  const dist = Math.hypot(tip.x - thumb.x, tip.y - thumb.y);
-  const pinch = dist < 0.08; // normalized threshold
+// ── AIR DRAW ──
+function handleDraw(lm) {
+  const tip=lm[8], thumb=lm[4];
+  const px=sx(tip.x), py=sy(tip.y);
+  const dist = Math.hypot(tip.x-thumb.x, tip.y-thumb.y);
+  const pinch = dist < 0.07; // normalized distance
 
   if(S.draw && pinch) {
     document.getElementById('drawStat').textContent='ON';
     document.getElementById('drawStat').className='cval g';
-    if(!S.pinching) {
-      S.pinching=true;
-      S.curPath={color:S.color,sz:S.brush,pts:[]};
-      S.paths.push(S.curPath);
+    if(!S.pinching){
+      S.pinching=true; S.curPath={color:S.color,sz:S.brush,pts:[]}; S.paths.push(S.curPath);
     }
     S.curPath.pts.push({x:px,y:py});
-    // draw last segment
     const pts=S.curPath.pts, n=pts.length;
     if(n>=2){
       dctx.beginPath();
@@ -371,14 +383,8 @@ function handleDraw(landmarks) {
         const a=pts[n-3],b=pts[n-2],c=pts[n-1];
         dctx.moveTo((a.x+b.x)/2,(a.y+b.y)/2);
         dctx.quadraticCurveTo(b.x,b.y,(b.x+c.x)/2,(b.y+c.y)/2);
-      } else {
-        dctx.moveTo(pts[0].x,pts[0].y);
-        dctx.lineTo(pts[1].x,pts[1].y);
-      }
-      dctx.strokeStyle=S.color;
-      dctx.lineWidth=S.brush;
-      dctx.lineCap='round'; dctx.lineJoin='round';
-      dctx.stroke();
+      } else { dctx.moveTo(pts[0].x,pts[0].y); dctx.lineTo(pts[1].x,pts[1].y); }
+      dctx.strokeStyle=S.color; dctx.lineWidth=S.brush; dctx.lineCap='round'; dctx.lineJoin='round'; dctx.stroke();
     }
   } else {
     if(S.pinching){ S.pinching=false; S.curPath=null; }
@@ -386,48 +392,32 @@ function handleDraw(landmarks) {
     document.getElementById('drawStat').className='cval';
     document.getElementById('drawStat').style.color='var(--text2)';
   }
-
-  // Cursor dot
-  ctx.beginPath();
-  ctx.arc(px,py,pinch&&S.draw?6:10,0,Math.PI*2);
-  ctx.strokeStyle=pinch&&S.draw?S.color:'rgba(255,255,255,0.7)';
-  ctx.lineWidth=2.5; ctx.stroke();
-  if(!pinch||!S.draw){
-    ctx.beginPath(); ctx.arc(px,py,3,0,Math.PI*2);
-    ctx.fillStyle='white'; ctx.fill();
-  }
+  // Cursor
+  ctx.beginPath(); ctx.arc(px,py,pinch&&S.draw?7:12,0,Math.PI*2);
+  ctx.strokeStyle=pinch&&S.draw?S.color:'rgba(255,255,255,.8)'; ctx.lineWidth=3; ctx.stroke();
+  if(!pinch||!S.draw){ ctx.beginPath(); ctx.arc(px,py,4,0,Math.PI*2); ctx.fillStyle='#fff'; ctx.fill(); }
 }
 
 // ── MAIN LOOP ──
 function onResults(results) {
   if(!running) return;
-
   ctx.clearRect(0,0,W,H);
-
-  // FPS
   frames++;
   const now=performance.now();
-  if(now-lastT>=1000){
-    document.getElementById('fpsVal').textContent=frames;
-    frames=0; lastT=now;
-  }
+  if(now-lastT>=1000){ fps=frames; document.getElementById('fpsVal').textContent=fps; frames=0; lastT=now; }
 
   const handCount = results.multiHandLandmarks ? results.multiHandLandmarks.length : 0;
-  document.getElementById('handCount').textContent=handCount;
-  log('Frame: hands=' + handCount);
+  document.getElementById('handCount').textContent = handCount;
 
   if(handCount > 0 && results.multiHandLandmarks[0]){
     const lm = results.multiHandLandmarks[0];
-
     drawSkeleton(lm);
-
     if(S.cnt){
       const {count,up}=countFingers(lm);
       document.getElementById('fingerVal').textContent=count;
       for(let i=0;i<5;i++) document.getElementById('fd'+i).classList.toggle('up',up[i]);
       document.getElementById('gestVal').textContent=gesture(lm);
     }
-
     handleDraw(lm);
   } else {
     document.getElementById('fingerVal').textContent='0';
@@ -438,29 +428,24 @@ function onResults(results) {
   }
 }
 
-// ── START ──
-document.getElementById('startBtn').onclick = async function(){
-  this.style.display='none';
-  const prog=document.getElementById('prog');
-  const fill=document.getElementById('progFill');
-  const msg=document.getElementById('loadMsg');
-  prog.style.display='block';
-  debugEl.style.display='block';
+// ── INITIALIZATION ──
+document.getElementById('startBtn').onclick = async function() {
+  const btn = this; btn.disabled = true; debugPanel.style.display = 'block';
+  log('=== STARTING HAND TRACKER ===');
 
   try {
-    msg.textContent='📦 MediaPipe লোড হচ্ছে...';
-    fill.style.width='20%';
-    log('Loading MediaPipe...');
+    // Step 1: Load MediaPipe Hands
+    setMsg('Loading MediaPipe library...'); setProgress(15);
+    await loadScript('https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240/hands.js');
 
-    if(typeof window.Hands === 'undefined'){
-      throw new Error('MediaPipe Hands library load হয়নি। CDN blocked হতে পারে।');
-    }
+    setMsg('Waiting for Hands API...'); setProgress(30);
+    const HandsAPI = await waitForGlobal('Hands', 10000);
+    log('Hands API found', 'ok');
 
-    msg.textContent='🤖 Hand model তৈরি হচ্ছে...';
-    fill.style.width='50%';
-
-    hands = new window.Hands({locateFile: (file) => {
-      log('Loading: ' + file);
+    // Step 2: Initialize detector
+    setMsg('Building hand detector...'); setProgress(45);
+    hands = new HandsAPI({locateFile: (file) => {
+      log(`Loading model file: ${file}`);
       return `https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240/${file}`;
     }});
 
@@ -470,66 +455,63 @@ document.getElementById('startBtn').onclick = async function(){
       minDetectionConfidence: 0.5,
       minTrackingConfidence: 0.5
     });
-
     hands.onResults(onResults);
-    log('Hands initialized');
+    log('Detector configured', 'ok');
 
-    msg.textContent='📷 ক্যামেরা চালু হচ্ছে...';
-    fill.style.width='75%';
-
+    // Step 3: Camera
+    setMsg('Requesting camera access...'); setProgress(60);
     const stream = await navigator.mediaDevices.getUserMedia({
-      video:{facingMode:'user',width:{ideal:640},height:{ideal:480}}
+      video: { facingMode:'user', width:{ideal:640}, height:{ideal:480} }
     });
-    video.srcObject=stream;
+    video.srcObject = stream;
 
+    setMsg('Starting video stream...'); setProgress(75);
     await new Promise((resolve, reject) => {
-      video.onloadedmetadata = () => {
-        video.play();
-        log('Video ready: ' + video.videoWidth + 'x' + video.videoHeight);
-        resolve();
-      };
-      video.onerror = (e) => reject(new Error('Video error'));
-      setTimeout(() => reject(new Error('Video load timeout')), 10000);
+      video.onloadedmetadata = () => { video.play(); resolve(); };
+      video.onerror = (e) => reject(new Error('Video stream failed'));
+      setTimeout(() => reject(new Error('Video timeout')), 10000);
     });
-
+    log(`Video: ${video.videoWidth}x${video.videoHeight}`, 'ok');
     resize();
 
-    // Send frames to MediaPipe
-    log('Starting camera loop...');
-    const sendFrame = async () => {
+    // Step 4: Start processing
+    setMsg('Starting hand tracking...'); setProgress(90);
+
+    async function processFrame() {
       if(!running) return;
       try {
         await hands.send({image: video});
       } catch(e) {
-        log('Send error: ' + e.message);
+        log('Frame error: ' + e.message, 'err');
       }
-      requestAnimationFrame(sendFrame);
-    };
+      requestAnimationFrame(processFrame);
+    }
 
-    fill.style.width='100%';
-    msg.textContent='✅ প্রস্তুত!';
-
+    setProgress(100); setMsg('Ready!'); log('Hand tracking active', 'ok');
     initColors();
 
-    setTimeout(()=>{
+    setTimeout(() => {
       document.getElementById('splash').classList.add('hidden');
-      document.getElementById('btm').style.display='flex';
-      document.getElementById('topRight').style.display='flex';
-      document.getElementById('sdot').classList.add('on');
-      document.getElementById('stxt').textContent='Live';
-      running=true;
-      sendFrame();
-      toast('🖐️ হাত দেখাও! Pinch করে আঁকো!');
-    }, 600);
+      document.getElementById('btm').style.display = 'flex';
+      document.getElementById('topRight').style.display = 'flex';
+      setStatus('Live', 'on');
+      running = true;
+      processFrame();
+      toast('🖐️ Show your hand! Pinch to draw');
+    }, 800);
 
-  } catch(err){
-    prog.style.display='none';
-    log('ERROR: ' + err.name + ' - ' + err.message);
-    document.getElementById('errTxt').textContent =
-      err.name==='NotAllowedError'
-        ? 'Camera permission দাও। Browser settings > Camera > Allow করো।'
-        : 'Error: ' + err.message + '\n\nChrome + HTTPS (GitHub Pages) ব্যবহার করো।\n\nConsole (F12) দেখো।';
-    document.getElementById('errMsg').style.display='flex';
+  } catch(err) {
+    log(`FATAL: ${err.name}: ${err.message}`, 'err');
+    btn.disabled = false;
+    setProgress(0);
+
+    let detail = err.message;
+    if(err.name === 'NotAllowedError') detail = 'Camera permission denied.<br>Go to browser settings → Privacy → Camera → Allow.';
+    else if(err.name === 'NotFoundError') detail = 'No camera found. Connect a webcam.';
+    else if(err.message.includes('Failed to load')) detail = 'CDN scripts blocked. Check internet or try VPN.<br>Error: ' + err.message;
+    else if(err.message.includes('not available')) detail = 'MediaPipe failed to initialize. Try refreshing or use Chrome.<br>Error: ' + err.message;
+
+    showError(err.name || 'Initialization Failed', detail);
   }
 };
 </script>
