@@ -28,9 +28,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 
 /* CAM */
 .cam-wrap{position:fixed;inset:0}
-#videoEl{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;opacity:1}
-#canvasEl{position:absolute;top:0;left:0;width:100%;height:100%}
-#drawCanvas{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none}
+#videoEl{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;opacity:1;z-index:1}
+#canvasEl{position:absolute;top:0;left:0;width:100%;height:100%;z-index:2}
+#drawCanvas{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:3}
 
 /* HEADER */
 header{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:rgba(15,17,23,0.7);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
@@ -87,6 +87,7 @@ header{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:
 #errMsg p{color:var(--text2);font-size:14px;line-height:1.7;max-width:300px}
 #errMsg button{background:var(--accent);color:white;border:none;padding:12px 28px;border-radius:100px;font-size:14px;font-weight:600;cursor:pointer}
 </style>
+<base target="_blank">
 </head>
 <body>
 
@@ -201,6 +202,21 @@ const dctx = drawCanvas.getContext('2d');
 let W=0, H=0, detector=null;
 let lastT = performance.now(), frames = 0;
 let running = false;
+
+// ── COORDINATE HELPERS (Fix #1) ──
+// TFJS hand-pose-detection returns normalized coords (0-1).
+// If pixel coords (>1) are detected, we normalize them.
+function normX(kp) {
+  const v = (kp.x > 1.0 && video.videoWidth > 0) ? (kp.x / video.videoWidth) : kp.x;
+  return (1 - v) * W; // mirror for selfie camera
+}
+function normY(kp) {
+  const v = (kp.y > 1.0 && video.videoHeight > 0) ? (kp.y / video.videoHeight) : kp.y;
+  return v * H;
+}
+function normVal(v, max) {
+  return (v > 1.0 && max > 0) ? (v / max) : v;
+}
 
 // ── COLORS INIT ──
 function initColors() {
@@ -320,7 +336,7 @@ function gesture(kp) {
 function drawSkeleton(kp) {
   if(!S.skel) return;
   const pos = {};
-  kp.forEach(k => pos[k.name] = { x:(1-k.x/video.videoWidth)*W, y:(k.y/video.videoHeight)*H });
+  kp.forEach(k => pos[k.name] = { x: normX(k), y: normY(k) });
 
   const names = kp.map(k=>k.name);
   CONNECTIONS.forEach(([ai,bi]) => {
@@ -356,10 +372,16 @@ function handleDraw(kp) {
   const thumb = lm['thumb_tip'];
   if(!tip||!thumb) return;
 
-  const px = (1 - tip.x/video.videoWidth)*W;
-  const py = (tip.y/video.videoHeight)*H;
-  const dist = Math.hypot((tip.x-thumb.x)/video.videoWidth,(tip.y-thumb.y)/video.videoHeight);
-  const pinch = dist < 0.07;
+  const px = normX(tip);
+  const py = normY(tip);
+
+  // Fix #2: normalized distance calculation
+  const tipX = normVal(tip.x, video.videoWidth);
+  const tipY = normVal(tip.y, video.videoHeight);
+  const thumbX = normVal(thumb.x, video.videoWidth);
+  const thumbY = normVal(thumb.y, video.videoHeight);
+  const dist = Math.hypot(tipX - thumbX, tipY - thumbY);
+  const pinch = dist < 0.08; // threshold for normalized coords
 
   if(S.draw && pinch) {
     document.getElementById('drawStat').textContent='ON';
@@ -410,6 +432,10 @@ async function loop() {
   if(!running) return;
   try {
     const hands = await detector.estimateHands(video,{flipHorizontal:false});
+
+    // Fix #3: Filter low-confidence detections (prevents false "hand 1")
+    const validHands = hands.filter(h => (h.score || 0) > 0.3);
+
     ctx.clearRect(0,0,W,H);
 
     // FPS
@@ -420,10 +446,10 @@ async function loop() {
       frames=0; lastT=now;
     }
 
-    document.getElementById('handCount').textContent=hands.length;
+    document.getElementById('handCount').textContent=validHands.length;
 
-    if(hands.length>0){
-      const kp=hands[0].keypoints;
+    if(validHands.length>0){
+      const kp=validHands[0].keypoints;
       drawSkeleton(kp);
       if(S.cnt){
         const {count,up}=countFingers(kp);
@@ -474,7 +500,15 @@ document.getElementById('startBtn').onclick = async function(){
       video:{facingMode:'user',width:{ideal:640},height:{ideal:480}}
     });
     video.srcObject=stream;
-    await video.play();
+
+    // Wait for video dimensions to be available
+    await new Promise((resolve) => {
+      video.onloadedmetadata = () => {
+        video.play();
+        resolve();
+      };
+    });
+
     resize();
 
     fill.style.width='100%';
