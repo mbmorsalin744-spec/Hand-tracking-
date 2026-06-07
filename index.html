@@ -3,69 +3,63 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Hand Connect - Neon Tracking</title>
+<title>Neon Glove - Hand Tracking</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { background: #000; overflow: hidden; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+body { background: #000; overflow: hidden; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; touch-action: none; }
 #wrap { position: relative; width: 100vw; height: 100vh; }
-#cam {
-    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-    object-fit: cover; transform: scaleX(-1); opacity: 0.85; z-index: 1;
-}
-#cv {
-    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-    transform: scaleX(-1); z-index: 2;
-}
+#cam { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); opacity: 0.8; z-index: 1; }
+#cv { position: absolute; top: 0; left: 0; width: 100%; height: 100%; transform: scaleX(-1); z-index: 2; }
+
 #hud {
     position: absolute; top: 15px; left: 15px; z-index: 100;
-    background: rgba(0, 15, 15, 0.75);
-    border: 1px solid rgba(0, 255, 200, 0.4);
-    border-radius: 10px;
-    padding: 15px;
-    color: #0ff;
-    font-size: 13px;
-    min-width: 170px;
-    backdrop-filter: blur(5px);
-    font-family: 'Courier New', Courier, monospace;
+    background: rgba(0, 10, 20, 0.7); border: 1px solid rgba(0, 255, 200, 0.35);
+    border-radius: 12px; padding: 18px; color: #0ff; font-size: 13px;
+    min-width: 180px; backdrop-filter: blur(6px); font-family: 'Courier New', monospace;
+    box-shadow: 0 0 20px rgba(0, 255, 200, 0.1);
 }
-#hud .row { display: flex; justify-content: space-between; margin: 5px 0; }
-#hud .lab { color: rgba(0, 255, 200, 0.6); }
-#hud .val { color: #0ff; font-weight: bold; }
-#hud .val.pinch { color: #ff0; text-shadow: 0 0 10px #ff0; }
-#start {
-    position: absolute; inset: 0; z-index: 1000; background: #000;
-    display: flex; flex-direction: column; justify-content: center; align-items: center;
-    gap: 20px;
-}
-#start h1 { color: #0ff; font-size: 32px; text-shadow: 0 0 20px #0ff; }
-#start p { color: #888; font-size: 14px; max-width: 350px; text-align: center; line-height: 1.5; }
-#btn {
-    padding: 18px 50px; font-size: 20px; border: none; border-radius: 40px;
-    background: linear-gradient(90deg, #00d2ff, #3a7bd5); color: #fff;
-    font-weight: bold; cursor: pointer; box-shadow: 0 0 30px rgba(0, 210, 255, 0.4);
-}
-#btn:active { transform: scale(0.96); }
-#load {
-    position: absolute; inset: 0; z-index: 999; background: rgba(0,0,0,0.92);
-    display: none; flex-direction: column; justify-content: center; align-items: center;
-    gap: 15px; color: #0ff; font-size: 18px;
-}
-.spin { width: 50px; height: 50px; border: 4px solid #333; border-top-color: #0ff; border-radius: 50%; animation: sp 1s linear infinite; }
-@keyframes sp { to { transform: rotate(360deg); } }
-#err {
-    position: absolute; inset: 0; z-index: 998; background: rgba(20,0,0,0.95);
-    display: none; flex-direction: column; justify-content: center; align-items: center;
-    padding: 30px; text-align: center; color: #faa;
-}
-#err h2 { color: #f44; margin-bottom: 10px; }
-#err p { color: #aaa; font-size: 14px; line-height: 1.6; max-width: 350px; }
+#hud .row { display: flex; justify-content: space-between; margin: 6px 0; }
+#hud .lab { color: rgba(0, 255, 200, 0.55); }
+#hud .val { color: #0ff; font-weight: bold; text-shadow: 0 0 8px rgba(0,255,255,0.5); }
+#hud .val.pinch { color: #ff0; text-shadow: 0 0 15px #ff0; animation: blink 0.6s infinite; }
+#hud .val.active { color: #f0f; text-shadow: 0 0 15px #f0f; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
 #badge {
-    position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
-    z-index: 100; padding: 12px 30px; background: rgba(0, 255, 200, 0.15);
-    border: 2px solid #0ff; border-radius: 30px; color: #0ff;
-    font-size: 18px; font-weight: bold; display: none;
-    backdrop-filter: blur(5px); text-shadow: 0 0 10px #0ff;
+    position: absolute; bottom: 50px; left: 50%; transform: translateX(-50%);
+    z-index: 100; padding: 14px 35px; background: rgba(0, 255, 200, 0.12);
+    border: 2px solid #0ff; border-radius: 50px; color: #0ff;
+    font-size: 20px; font-weight: bold; display: none;
+    backdrop-filter: blur(8px); text-shadow: 0 0 15px #0ff;
+    box-shadow: 0 0 40px rgba(0, 255, 200, 0.25);
+    animation: badgePulse 2s infinite;
 }
+@keyframes badgePulse { 0%,100%{transform:translateX(-50%) scale(1)} 50%{transform:translateX(-50%) scale(1.06)} }
+
+#start {
+    position: absolute; inset: 0; z-index: 1000; background: linear-gradient(180deg, #000 0%, #050510 50%, #000 100%);
+    display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 25px;
+}
+#start h1 { font-size: 38px; background: linear-gradient(90deg, #0ff, #f0f, #ff0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: titleGlow 3s infinite; }
+@keyframes titleGlow { 0%,100%{filter:brightness(1)} 50%{filter:brightness(1.4)} }
+#start p { color: #888; font-size: 15px; max-width: 380px; text-align: center; line-height: 1.6; }
+#btn {
+    padding: 20px 55px; font-size: 20px; border: 2px solid #0ff; border-radius: 50px;
+    background: rgba(0, 255, 200, 0.1); color: #0ff; font-weight: bold; cursor: pointer;
+    box-shadow: 0 0 40px rgba(0, 255, 200, 0.2); transition: all 0.3s; text-transform: uppercase; letter-spacing: 2px;
+}
+#btn:hover, #btn:active { background: rgba(0, 255, 200, 0.25); box-shadow: 0 0 60px rgba(0, 255, 200, 0.5); transform: scale(1.05); }
+
+#load {
+    position: absolute; inset: 0; z-index: 999; background: rgba(0,0,0,0.93);
+    display: none; flex-direction: column; justify-content: center; align-items: center; gap: 18px;
+    color: #0ff; font-size: 18px;
+}
+.spin { width: 60px; height: 60px; border: 4px solid #222; border-top: 4px solid #0ff; border-right: 4px solid #f0f; border-radius: 50%; animation: sp 1s linear infinite; }
+@keyframes sp { to { transform: rotate(360deg); } }
+#err { position: absolute; inset: 0; z-index: 998; background: rgba(20,0,0,0.95); display: none; flex-direction: column; justify-content: center; align-items: center; padding: 30px; text-align: center; color: #faa; }
+#err h2 { color: #f44; margin-bottom: 12px; font-size: 26px; }
+#err p { color: #aaa; font-size: 14px; line-height: 1.7; max-width: 360px; }
 </style>
 <base target="_blank">
 </head>
@@ -76,34 +70,34 @@ body { background: #000; overflow: hidden; font-family: 'Segoe UI', Tahoma, Gene
     <canvas id="cv"></canvas>
 
     <div id="hud">
-        <div class="row"><span class="lab">Hands Detected:</span><span class="val" id="vHands">0</span></div>
+        <div class="row"><span class="lab">Hands:</span><span class="val" id="vHands">0</span></div>
         <div class="row"><span class="lab">FPS:</span><span class="val" id="vFps">0</span></div>
         <div class="row"><span class="lab">Gesture:</span><span class="val" id="vGest">-</span></div>
         <div class="row"><span class="lab">Spread:</span><span class="val" id="vSpread">0%</span></div>
+        <div class="row"><span class="lab">Mode:</span><span class="val" id="vMode">NEON GLOVE</span></div>
     </div>
 
-    <div id="badge">👌 PINCH!</div>
+    <div id="badge">👌 PINCH DETECTED</div>
 
     <div id="start">
-        <h1>🖐 Hand Connect</h1>
-        <p>Neon hand tracking with real-time gesture detection. Works directly in your browser.</p>
-        <button id="btn" onclick="go()">▶ START CAMERA</button>
-        <p style="font-size:12px;color:#555;">Use Chrome or Safari • Allow Camera • HTTPS Required</p>
+        <h1>🖐 NEON GLOVE</h1>
+        <p>Full hand mesh wraps around your real hand like a holographic glove. Filled palm, finger tubes, particle trails, and energy beams.</p>
+        <button id="btn" onclick="go()">▶ ACTIVATE</button>
+        <p style="font-size:12px;color:#555;">Chrome / Safari • Camera • HTTPS • 10MB Download</p>
     </div>
 
     <div id="load">
         <div class="spin"></div>
-        <div>Loading AI Model...</div>
-        <div style="font-size:12px;color:#666;">First time: ~10 seconds</div>
+        <div>Loading Neural Network...</div>
+        <div style="font-size:12px;color:#666;">Downloading 3MB AI model (one-time)</div>
     </div>
 
     <div id="err">
-        <h2>❌ ERROR</h2>
-        <p id="errMsg">Something went wrong</p>
+        <h2>❌ SYSTEM ERROR</h2>
+        <p id="errMsg">Error</p>
     </div>
 </div>
 
-<!-- MediaPipe -->
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
 
@@ -115,7 +109,6 @@ const startDiv = document.getElementById('start');
 const loadDiv = document.getElementById('load');
 const errDiv = document.getElementById('err');
 const errMsg = document.getElementById('errMsg');
-
 const vHands = document.getElementById('vHands');
 const vFps = document.getElementById('vFps');
 const vGest = document.getElementById('vGest');
@@ -125,20 +118,13 @@ const badge = document.getElementById('badge');
 let hands, camera;
 let fc = 0, lt = 0, fps = 0;
 
-// Resize canvas exactly to window
-function resize() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-}
+function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
 window.addEventListener('resize', resize);
 resize();
 
-// Distance between two landmarks
-function dist(a, b) {
-    return Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
-}
+function dist(a, b) { return Math.sqrt((a.x-b.x)**2 + (a.y-b.y)**2); }
 
-// Hand connections (same as MediaPipe)
+// MediaPipe hand connections
 const CONNS = [
     [0,1],[1,2],[2,3],[3,4],
     [0,5],[5,6],[6,7],[7,8],
@@ -148,157 +134,293 @@ const CONNS = [
     [5,9],[9,13],[13,17]
 ];
 
-// Neon colors per hand
-const COLORS = [
-    {r:0, g:255, b:255},   // Cyan
-    {r:255, g:0, b:255}    // Magenta
+// Palm triangles for filled mesh
+const PALM_TRIS = [
+    [0,1,5],[0,5,9],[0,9,13],[0,13,17],
+    [5,9,13],[9,13,17]
 ];
 
-// Draw a glowing neon line (fast method without shadowBlur lag)
-function neonLine(x1, y1, x2, y2, c, width) {
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
+// Finger chains
+const FINGERS = [
+    [0,1,2,3,4],
+    [0,5,6,7,8],
+    [0,9,10,11,12],
+    [0,13,14,15,16],
+    [0,17,18,19,20]
+];
 
-    // Outer soft glow
-    ctx.strokeStyle = `rgba(${c.r},${c.g},${c.b},0.15)`;
-    ctx.lineWidth = width + 12;
-    ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
-
-    // Mid glow
-    ctx.strokeStyle = `rgba(${c.r},${c.g},${c.b},0.4)`;
-    ctx.lineWidth = width + 5;
-    ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
-
-    // Core line
-    ctx.strokeStyle = `rgba(${c.r},${c.g},${c.b},0.95)`;
-    ctx.lineWidth = width;
-    ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
-
-    // White center
-    ctx.strokeStyle = 'rgba(255,255,255,0.7)';
-    ctx.lineWidth = width * 0.35;
-    ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+// Outer contour of hand (for glove outline)
+function getHandContour(lm) {
+    return [
+        lm[0], lm[1], lm[2], lm[3], lm[4],
+        lm[3], lm[2], lm[1], lm[5], lm[6], lm[7], lm[8],
+        lm[7], lm[6], lm[5], lm[9], lm[10], lm[11], lm[12],
+        lm[11], lm[10], lm[9], lm[13], lm[14], lm[15], lm[16],
+        lm[15], lm[14], lm[13], lm[17], lm[18], lm[19], lm[20],
+        lm[19], lm[18], lm[17], lm[0]
+    ];
 }
 
-// Draw glowing joint
-function neonJoint(x, y, c, size) {
-    // Outer aura
-    ctx.fillStyle = `rgba(${c.r},${c.g},${c.b},0.25)`;
-    ctx.beginPath(); ctx.arc(x, y, size + 8, 0, Math.PI*2); ctx.fill();
+const COLORS = [
+    {r:0, g:255, b:255, hex:'#0ff'},
+    {r:255, g:0, b:255, hex:'#f0f'}
+];
 
-    // Mid
-    ctx.fillStyle = `rgba(${c.r},${c.g},${c.b},0.6)`;
-    ctx.beginPath(); ctx.arc(x, y, size + 3, 0, Math.PI*2); ctx.fill();
+// ==================== DRAWING ====================
 
-    // Core white
+function drawFilledPalm(lm, c, w, h) {
+    // Fill palm triangles with gradient
+    for (let tri of PALM_TRIS) {
+        const p0 = lm[tri[0]], p1 = lm[tri[1]], p2 = lm[tri[2]];
+        const grad = ctx.createRadialGradient(
+            p1.x*w, p1.y*h, 0,
+            p1.x*w, p1.y*h, 120
+        );
+        grad.addColorStop(0, `rgba(${c.r},${c.g},${c.b},0.25)`);
+        grad.addColorStop(1, `rgba(${c.r},${c.g},${c.b},0.02)`);
+
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.moveTo(p0.x*w, p0.y*h);
+        ctx.lineTo(p1.x*w, p1.y*h);
+        ctx.lineTo(p2.x*w, p2.y*h);
+        ctx.closePath();
+        ctx.fill();
+    }
+}
+
+function drawFingerTube(lm, fingerIdx, c, w, h) {
+    const finger = FINGERS[fingerIdx];
+    const pts = finger.map(i => ({x: lm[i].x*w, y: lm[i].y*h}));
+
+    // Draw thick tube-like path for each finger segment
+    for (let i = 0; i < pts.length - 1; i++) {
+        const p1 = pts[i], p2 = pts[i+1];
+        const dx = p2.x - p1.x, dy = p2.y - p1.y;
+        const len = Math.sqrt(dx*dx + dy*dy);
+        const nx = -dy/len, ny = dx/len;
+        const thickness = 6 + (fingerIdx === 0 ? 2 : 0); // thumb slightly thicker
+
+        // Outer glow
+        ctx.fillStyle = `rgba(${c.r},${c.g},${c.b},0.12)`;
+        ctx.beginPath();
+        ctx.moveTo(p1.x + nx*(thickness+10), p1.y + ny*(thickness+10));
+        ctx.lineTo(p2.x + nx*(thickness+10), p2.y + ny*(thickness+10));
+        ctx.lineTo(p2.x - nx*(thickness+10), p2.y - ny*(thickness+10));
+        ctx.lineTo(p1.x - nx*(thickness+10), p1.y - ny*(thickness+10));
+        ctx.closePath();
+        ctx.fill();
+
+        // Mid glow
+        ctx.fillStyle = `rgba(${c.r},${c.g},${c.b},0.35)`;
+        ctx.beginPath();
+        ctx.moveTo(p1.x + nx*(thickness+4), p1.y + ny*(thickness+4));
+        ctx.lineTo(p2.x + nx*(thickness+4), p2.y + ny*(thickness+4));
+        ctx.lineTo(p2.x - nx*(thickness+4), p2.y - ny*(thickness+4));
+        ctx.lineTo(p1.x - nx*(thickness+4), p1.y - ny*(thickness+4));
+        ctx.closePath();
+        ctx.fill();
+
+        // Core line
+        ctx.strokeStyle = `rgba(255,255,255,0.85)`;
+        ctx.lineWidth = 2.5;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(p1.x, p1.y);
+        ctx.lineTo(p2.x, p2.y);
+        ctx.stroke();
+
+        // Neon core
+        ctx.strokeStyle = `rgba(${c.r},${c.g},${c.b},0.9)`;
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(p1.x, p1.y);
+        ctx.lineTo(p2.x, p2.y);
+        ctx.stroke();
+    }
+
+    // Rounded fingertip cap
+    const tip = pts[pts.length-1];
+    ctx.fillStyle = `rgba(${c.r},${c.g},${c.b},0.3)`;
+    ctx.beginPath(); ctx.arc(tip.x, tip.y, 10, 0, Math.PI*2); ctx.fill();
     ctx.fillStyle = '#fff';
-    ctx.beginPath(); ctx.arc(x, y, size, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(tip.x, tip.y, 4, 0, Math.PI*2); ctx.fill();
 }
 
-// Draw one hand skeleton
-function drawHand(lm, idx) {
-    const c = COLORS[idx % 2];
-    const w = canvas.width;
-    const h = canvas.height;
+function drawHandContour(lm, c, w, h) {
+    const contour = getHandContour(lm);
 
-    // Draw connections
-    for (let [a, b] of CONNS) {
-        const x1 = lm[a].x * w;
-        const y1 = lm[a].y * h;
-        const x2 = lm[b].x * w;
-        const y2 = lm[b].y * h;
-        neonLine(x1, y1, x2, y2, c, 3);
+    // Outer glow contour
+    ctx.strokeStyle = `rgba(${c.r},${c.g},${c.b},0.15)`;
+    ctx.lineWidth = 25;
+    ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    ctx.beginPath();
+    for (let i = 0; i < contour.length; i++) {
+        const x = contour[i].x*w, y = contour[i].y*h;
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
     }
+    ctx.stroke();
 
-    // Draw joints
+    // Mid contour
+    ctx.strokeStyle = `rgba(${c.r},${c.g},${c.b},0.4)`;
+    ctx.lineWidth = 8;
+    ctx.beginPath();
+    for (let i = 0; i < contour.length; i++) {
+        const x = contour[i].x*w, y = contour[i].y*h;
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+
+    // Sharp inner contour
+    ctx.strokeStyle = `rgba(255,255,255,0.6)`;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    for (let i = 0; i < contour.length; i++) {
+        const x = contour[i].x*w, y = contour[i].y*h;
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+}
+
+function drawJoints(lm, c, w, h) {
     for (let i = 0; i < lm.length; i++) {
-        const x = lm[i].x * w;
-        const y = lm[i].y * h;
-        const s = (i % 4 === 0) ? 5 : 2.5; // tips bigger
-        neonJoint(x, y, c, s);
+        const x = lm[i].x*w, y = lm[i].y*h;
+        const isTip = (i % 4 === 0 && i > 0);
+        const size = isTip ? 7 : 3.5;
+
+        // Glow
+        ctx.fillStyle = `rgba(${c.r},${c.g},${c.b},0.2)`;
+        ctx.beginPath(); ctx.arc(x, y, size+10, 0, Math.PI*2); ctx.fill();
+
+        ctx.fillStyle = `rgba(${c.r},${c.g},${c.b},0.5)`;
+        ctx.beginPath(); ctx.arc(x, y, size+4, 0, Math.PI*2); ctx.fill();
+
+        // Core
+        ctx.fillStyle = isTip ? '#fff' : `rgba(${c.r},${c.g},${c.b},0.9)`;
+        ctx.beginPath(); ctx.arc(x, y, size, 0, Math.PI*2); ctx.fill();
     }
 }
 
-// Draw rainbow bridge between two hands
-function drawBridge(handsData) {
-    if (handsData.length < 2) return;
-    const w = canvas.width;
-    const h = canvas.height;
+function drawHologramRing(lm, c, w, h, time) {
+    const center = lm[9]; // middle finger base
+    const cx = center.x*w, cy = center.y*h;
+    const pulse = 1 + Math.sin(time*3)*0.15;
+    const radius = 45 * pulse;
 
-    const c1 = handsData[0][9]; // middle finger base
-    const c2 = handsData[1][9];
-    const x1 = c1.x * w, y1 = c1.y * h;
-    const x2 = c2.x * w, y2 = c2.y * h;
+    ctx.strokeStyle = `rgba(${c.r},${c.g},${c.b},0.3)`;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([10, 5]);
+    ctx.beginPath(); ctx.arc(cx, cy, radius, 0, Math.PI*2); ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.strokeStyle = `rgba(${c.r},${c.g},${c.b},0.15)`;
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.arc(cx, cy, radius+15, 0, Math.PI*2); ctx.stroke();
+}
+
+function drawEnergyBridge(handsData, w, h) {
+    if (handsData.length < 2) return;
+    const c1 = handsData[0][9], c2 = handsData[1][9];
+    const x1 = c1.x*w, y1 = c1.y*h;
+    const x2 = c2.x*w, y2 = c2.y*h;
 
     const grad = ctx.createLinearGradient(x1, y1, x2, y2);
-    grad.addColorStop(0, 'rgba(0,255,255,0.8)');
-    grad.addColorStop(0.5, 'rgba(255,0,255,0.8)');
-    grad.addColorStop(1, 'rgba(255,255,0,0.8)');
+    grad.addColorStop(0, 'rgba(0,255,255,0.7)');
+    grad.addColorStop(0.5, 'rgba(255,0,255,0.7)');
+    grad.addColorStop(1, 'rgba(255,255,0,0.7)');
 
-    ctx.lineCap = 'round';
     ctx.strokeStyle = grad;
-    ctx.lineWidth = 8;
+    ctx.lineWidth = 10;
+    ctx.lineCap = 'round';
     ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
 
-    // Center glow orb
-    const mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
-    ctx.fillStyle = 'rgba(255,255,255,0.9)';
-    ctx.beginPath(); ctx.arc(mx, my, 6, 0, Math.PI*2); ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,0.8)';
+    ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+
+    const mx = (x1+x2)/2, my = (y1+y2)/2;
+    ctx.fillStyle = '#fff';
+    ctx.beginPath(); ctx.arc(mx, my, 7, 0, Math.PI*2); ctx.fill();
 }
 
-// Calculate hand spread percentage
-function getSpread(lm) {
-    const wrist = lm[0];
-    const tips = [lm[4], lm[8], lm[12], lm[16], lm[20]];
-    let max = 0;
-    for (let t of tips) {
-        const d = dist(wrist, t);
-        if (d > max) max = d;
+function drawCornerBrackets(lm, c, w, h) {
+    // Find bounding box of hand
+    let minX=1, minY=1, maxX=0, maxY=0;
+    for (let p of lm) {
+        if (p.x < minX) minX = p.x;
+        if (p.x > maxX) maxX = p.x;
+        if (p.y < minY) minY = p.y;
+        if (p.y > maxY) maxY = p.y;
     }
-    return Math.min(Math.round(max * 150), 100);
+    const padding = 0.05;
+    minX -= padding; minY -= padding; maxX += padding; maxY += padding;
+    const x1 = minX*w, y1 = minY*h, x2 = maxX*w, y2 = maxY*h;
+    const len = 25;
+
+    ctx.strokeStyle = `rgba(${c.r},${c.g},${c.b},0.6)`;
+    ctx.lineWidth = 2;
+
+    // Top-left
+    ctx.beginPath(); ctx.moveTo(x1+len, y1); ctx.lineTo(x1, y1); ctx.lineTo(x1, y1+len); ctx.stroke();
+    // Top-right
+    ctx.beginPath(); ctx.moveTo(x2-len, y1); ctx.lineTo(x2, y1); ctx.lineTo(x2, y1+len); ctx.stroke();
+    // Bottom-left
+    ctx.beginPath(); ctx.moveTo(x1+len, y2); ctx.lineTo(x1, y2); ctx.lineTo(x1, y2-len); ctx.stroke();
+    // Bottom-right
+    ctx.beginPath(); ctx.moveTo(x2-len, y2); ctx.lineTo(x2, y2); ctx.lineTo(x2, y2-len); ctx.stroke();
 }
 
-// Check pinch gesture
-function isPinch(lm) {
-    return dist(lm[4], lm[8]) < 0.055;
-}
+// ==================== MAIN LOOP ====================
 
-// MediaPipe results handler
 function onResults(results) {
     const now = performance.now();
     fc++;
-    if (now - lt >= 1000) {
-        fps = fc;
-        fc = 0;
-        lt = now;
-        vFps.textContent = fps;
-    }
+    if (now - lt >= 1000) { fps = fc; fc = 0; lt = now; vFps.textContent = fps; }
 
-    // Clear canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const w = canvas.width, h = canvas.height;
+    const time = Date.now() / 1000;
 
     if (!results.multiHandLandmarks || results.multiHandLandmarks.length === 0) {
-        vHands.textContent = '0';
-        vGest.textContent = '-';
-        vSpread.textContent = '0%';
-        vGest.className = 'val';
-        badge.style.display = 'none';
+        vHands.textContent = '0'; vGest.textContent = '-'; vSpread.textContent = '0%';
+        vGest.className = 'val'; badge.style.display = 'none';
         return;
     }
 
     const handsData = results.multiHandLandmarks;
-    let hasPinch = false;
-    let totalSpread = 0;
+    let hasPinch = false, totalSpread = 0;
 
-    // Draw each hand
     for (let i = 0; i < handsData.length; i++) {
-        drawHand(handsData[i], i);
-        if (isPinch(handsData[i])) hasPinch = true;
-        totalSpread += getSpread(handsData[i]);
+        const lm = handsData[i];
+        const c = COLORS[i % 2];
+
+        // 1. Filled palm (glove base)
+        drawFilledPalm(lm, c, w, h);
+
+        // 2. Finger tubes (wrapped around fingers)
+        for (let f = 0; f < 5; f++) drawFingerTube(lm, f, c, w, h);
+
+        // 3. Outer hand contour glow
+        drawHandContour(lm, c, w, h);
+
+        // 4. Joints
+        drawJoints(lm, c, w, h);
+
+        // 5. Hologram ring on palm
+        drawHologramRing(lm, c, w, h, time + i);
+
+        // 6. Target brackets
+        drawCornerBrackets(lm, c, w, h);
+
+        if (isPinch(lm)) hasPinch = true;
+        totalSpread += getSpread(lm);
     }
 
-    // Draw bridge between hands
-    drawBridge(handsData);
+    // 7. Energy bridge between hands
+    drawEnergyBridge(handsData, w, h);
 
     // Update HUD
     vHands.textContent = handsData.length;
@@ -316,43 +438,31 @@ function onResults(results) {
     }
 }
 
-// Start everything
+function getSpread(lm) {
+    const wrist = lm[0];
+    const tips = [lm[4], lm[8], lm[12], lm[16], lm[20]];
+    let max = 0;
+    for (let t of tips) { const d = dist(wrist, t); if (d > max) max = d; }
+    return Math.min(Math.round(max * 150), 100);
+}
+function isPinch(lm) { return dist(lm[4], lm[8]) < 0.055; }
+
+// ==================== INIT ====================
 async function go() {
     startDiv.style.display = 'none';
     loadDiv.style.display = 'flex';
 
     try {
-        // Check libraries loaded
-        if (typeof Hands === 'undefined') {
-            throw new Error('MediaPipe Hands library failed to load. Check your internet connection and refresh.');
-        }
-        if (typeof Camera === 'undefined') {
-            throw new Error('MediaPipe Camera utility failed to load. Check your internet connection and refresh.');
-        }
+        if (typeof Hands === 'undefined') throw new Error('MediaPipe Hands library failed to load. Check internet and refresh.');
+        if (typeof Camera === 'undefined') throw new Error('MediaPipe Camera utility failed to load. Check internet and refresh.');
 
-        // Init Hands
-        hands = new Hands({
-            locateFile: (file) => {
-                return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
-            }
-        });
-
-        hands.setOptions({
-            maxNumHands: 2,
-            modelComplexity: 1,
-            minDetectionConfidence: 0.5,
-            minTrackingConfidence: 0.5
-        });
-
+        hands = new Hands({ locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}` });
+        hands.setOptions({ maxNumHands: 2, modelComplexity: 1, minDetectionConfidence: 0.5, minTrackingConfidence: 0.5 });
         hands.onResults(onResults);
 
-        // Init Camera
         camera = new Camera(video, {
-            onFrame: async () => {
-                await hands.send({ image: video });
-            },
-            width: 640,
-            height: 480
+            onFrame: async () => { await hands.send({ image: video }); },
+            width: 640, height: 480
         });
 
         await camera.start();
@@ -363,18 +473,17 @@ async function go() {
         errDiv.style.display = 'flex';
         errMsg.innerHTML = `<b>${e.message}</b><br><br>
         <b>Fixes:</b><br>
-        • Use <b>Chrome</b> or <b>Safari</b> browser<br>
-        • Connect to <b>HTTPS</b> (not HTTP)<br>
-        • Allow <b>Camera Permission</b> when prompted<br>
-        • Check your <b>internet</b> (needs to download 3MB model)<br>
-        • Refresh the page and try again`;
+        • Use <b>Chrome</b> or <b>Safari</b><br>
+        • Must be <b>HTTPS</b> (not HTTP)<br>
+        • Allow <b>Camera Permission</b><br>
+        • Check <b>internet</b> (3MB model)<br>
+        • Refresh and retry`;
         console.error(e);
     }
 }
 
-// Check on load
 window.addEventListener('load', () => {
-    console.log('Page loaded. MediaPipe Hands:', typeof Hands, 'Camera:', typeof Camera);
+    console.log('Loaded. Hands:', typeof Hands, 'Camera:', typeof Camera);
 });
 </script>
 
